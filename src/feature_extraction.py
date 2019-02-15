@@ -85,9 +85,10 @@ class FeatureExtraction:
             return 0  # legitimate
 
 class Main:
-    raw_data = pd.read_csv("../raw_datasets/data_phishing_1000.txt", header=None, names=['urls'])
+    raw_data_phishing = pd.read_csv("../raw_datasets/data_phishing_1000.txt", header=None, names=['urls'])
+    raw_data_legit = pd.read_csv("../raw_datasets/data_legitimate_1000.txt", header=None, names=['urls'])
 
-    # features
+    # features - PHISHING
     protocol = []
     domain = []
     path = []
@@ -101,11 +102,11 @@ class Main:
 
     # object creation
     fe = FeatureExtraction()
-    rows = len(raw_data["urls"])
+    phishing_rows = len(raw_data_phishing["urls"])
+    legitimate_rows = len(raw_data_legit["urls"])
 
-    for i in range(0, rows):
-        url = raw_data["urls"][i]
-        print(i), print(url)
+    for i in range(0, phishing_rows):
+        url = raw_data_phishing["urls"][i]
         protocol.append(fe.getProtocol(url))
         path.append(fe.getPath(url))
         domain.append(fe.getDomain(url))
@@ -117,14 +118,49 @@ class Main:
         sub_domains.append(fe.sub_domains(url))
         tiny_url.append(fe.shortening_service(url))
 
-    label = []
-    for i in range(0, rows):
-        label.append(1)
+    phishing_label = [1 for i in range(0, phishing_rows)]
 
     d={'Protocol':pd.Series(protocol),'Domain':pd.Series(domain),'Path':pd.Series(path),'Having_IP':pd.Series(having_ip),
        'URL_Length':pd.Series(len_url),'Having_@_symbol':pd.Series(having_at_symbol),
        'Redirection_//_symbol':pd.Series(redirection_symbol),'Prefix_suffix_separation':pd.Series(prefix_suffix_separation),
        'Sub_domains':pd.Series(sub_domains),'tiny_url':pd.Series(tiny_url),
-       'label':pd.Series(label)}
+       'label':pd.Series(phishing_label)}
     data = pd.DataFrame(d)
-    data.to_csv("phishing-urls.csv", index=False, encoding='UTF-8')
+    data.to_csv("../extracted_csv_files/phishing-urls.csv", index=False, encoding='UTF-8')
+
+    # features - LEGITIMATE
+    protocol = []
+    domain = []
+    path = []
+    having_ip = []
+    len_url = []
+    having_at_symbol = []
+    redirection_symbol = []
+    prefix_suffix_separation = []
+    sub_domains = []
+    tiny_url = []
+
+    for i in range(0, legitimate_rows):
+        url = raw_data_legit["urls"][i]
+        protocol.append(fe.getProtocol(url))
+        path.append(fe.getPath(url))
+        domain.append(fe.getDomain(url))
+        having_ip.append(fe.havingIP(url))
+        len_url.append(fe.long_url(url))
+        having_at_symbol.append(fe.have_at_symbol(url))
+        redirection_symbol.append(fe.redirection(url))
+        prefix_suffix_separation.append(fe.prefix_suffix_separation(url))
+        sub_domains.append(fe.sub_domains(url))
+        tiny_url.append(fe.shortening_service(url))
+
+    legit_label = [0 for i in range(0, legitimate_rows)]
+    d={'Protocol':pd.Series(protocol),'Domain':pd.Series(domain),'Path':pd.Series(path),'Having_IP':pd.Series(having_ip),
+       'URL_Length':pd.Series(len_url),'Having_@_symbol':pd.Series(having_at_symbol),
+       'Redirection_//_symbol':pd.Series(redirection_symbol),'Prefix_suffix_separation':pd.Series(prefix_suffix_separation),
+       'Sub_domains':pd.Series(sub_domains),'tiny_url':pd.Series(tiny_url),
+       'label':pd.Series(legit_label)}
+    data = pd.DataFrame(d)
+    data.to_csv("../extracted_csv_files/legitimate-urls.csv", index=False, encoding='UTF-8')
+
+
+
