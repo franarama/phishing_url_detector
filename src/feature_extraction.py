@@ -1,7 +1,10 @@
 # File for performing feature extraction on given urls
 from urllib.parse import urlparse
+import urllib.request
+from urllib.error import HTTPError
 import re
 import pandas as pd
+from bs4 import BeautifulSoup
 
 
 class FeatureExtraction:
@@ -84,83 +87,74 @@ class FeatureExtraction:
         else:
             return 0  # legitimate
 
-class Main:
-    raw_data_phishing = pd.read_csv("../raw_datasets/data_phishing_1000.txt", header=None, names=['urls'])
-    raw_data_legit = pd.read_csv("../raw_datasets/data_legitimate_1000.txt", header=None, names=['urls'])
+    # check Alexa rank
+    def web_traffic(self, url):
+        try:
+            rank = \
+                BeautifulSoup(urllib.request.urlopen("http://data.alexa.com/data?cli=10&dat=s&url=" + url).read(), "xml").find(
+                    "REACH")['RANK']
+        except TypeError:
+            return 1
+        except HTTPError:
+            return 2
+        rank = int(rank)
+        if rank < 100000:
+            return 0
+        else:
+            return 2
 
-    # features - PHISHING
-    protocol = []
-    domain = []
-    path = []
-    having_ip = []
-    len_url = []
-    having_at_symbol = []
-    redirection_symbol = []
-    prefix_suffix_separation = []
-    sub_domains = []
-    tiny_url = []
 
-    # object creation
-    fe = FeatureExtraction()
-    phishing_rows = len(raw_data_phishing["urls"])
-    legitimate_rows = len(raw_data_legit["urls"])
+class FeMain:
+    @staticmethod
+    def main(input_data_path, bool_phishing):
 
-    for i in range(0, phishing_rows):
-        url = raw_data_phishing["urls"][i]
-        protocol.append(fe.getProtocol(url))
-        path.append(fe.getPath(url))
-        domain.append(fe.getDomain(url))
-        having_ip.append(fe.havingIP(url))
-        len_url.append(fe.long_url(url))
-        having_at_symbol.append(fe.have_at_symbol(url))
-        redirection_symbol.append(fe.redirection(url))
-        prefix_suffix_separation.append(fe.prefix_suffix_separation(url))
-        sub_domains.append(fe.sub_domains(url))
-        tiny_url.append(fe.shortening_service(url))
+        raw_data = pd.read_csv(input_data_path, header=None, names=['urls'])
 
-    phishing_label = [1 for i in range(0, phishing_rows)]
+        # features
+        protocol = []
+        domain = []
+        path = []
+        having_ip = []
+        len_url = []
+        having_at_symbol = []
+        redirection_symbol = []
+        prefix_suffix_separation = []
+        sub_domains = []
+        tiny_url = []
+        web_traffic = []
 
-    d={'Protocol':pd.Series(protocol),'Domain':pd.Series(domain),'Path':pd.Series(path),'Having_IP':pd.Series(having_ip),
-       'URL_Length':pd.Series(len_url),'Having_@_symbol':pd.Series(having_at_symbol),
-       'Redirection_//_symbol':pd.Series(redirection_symbol),'Prefix_suffix_separation':pd.Series(prefix_suffix_separation),
-       'Sub_domains':pd.Series(sub_domains),'tiny_url':pd.Series(tiny_url),
-       'label':pd.Series(phishing_label)}
-    data = pd.DataFrame(d)
-    data.to_csv("../extracted_csv_files/phishing-urls.csv", index=False, encoding='UTF-8')
+        # object creation
+        fe = FeatureExtraction()
 
-    # features - LEGITIMATE
-    protocol = []
-    domain = []
-    path = []
-    having_ip = []
-    len_url = []
-    having_at_symbol = []
-    redirection_symbol = []
-    prefix_suffix_separation = []
-    sub_domains = []
-    tiny_url = []
+        for i in range(0, len(raw_data["urls"])):
+            url = raw_data["urls"][i]
+            protocol.append(fe.getProtocol(url))
+            path.append(fe.getPath(url))
+            domain.append(fe.getDomain(url))
+            having_ip.append(fe.havingIP(url))
+            len_url.append(fe.long_url(url))
+            having_at_symbol.append(fe.have_at_symbol(url))
+            redirection_symbol.append(fe.redirection(url))
+            prefix_suffix_separation.append(fe.prefix_suffix_separation(url))
+            sub_domains.append(fe.sub_domains(url))
+            tiny_url.append(fe.shortening_service(url))
+            web_traffic.append(fe.web_traffic(url))
 
-    for i in range(0, legitimate_rows):
-        url = raw_data_legit["urls"][i]
-        protocol.append(fe.getProtocol(url))
-        path.append(fe.getPath(url))
-        domain.append(fe.getDomain(url))
-        having_ip.append(fe.havingIP(url))
-        len_url.append(fe.long_url(url))
-        having_at_symbol.append(fe.have_at_symbol(url))
-        redirection_symbol.append(fe.redirection(url))
-        prefix_suffix_separation.append(fe.prefix_suffix_separation(url))
-        sub_domains.append(fe.sub_domains(url))
-        tiny_url.append(fe.shortening_service(url))
+        label = [1 if bool_phishing is True else 0 for i in range(0, len(raw_data["urls"]))]
 
-    legit_label = [0 for i in range(0, legitimate_rows)]
-    d={'Protocol':pd.Series(protocol),'Domain':pd.Series(domain),'Path':pd.Series(path),'Having_IP':pd.Series(having_ip),
-       'URL_Length':pd.Series(len_url),'Having_@_symbol':pd.Series(having_at_symbol),
-       'Redirection_//_symbol':pd.Series(redirection_symbol),'Prefix_suffix_separation':pd.Series(prefix_suffix_separation),
-       'Sub_domains':pd.Series(sub_domains),'tiny_url':pd.Series(tiny_url),
-       'label':pd.Series(legit_label)}
-    data = pd.DataFrame(d)
-    data.to_csv("../extracted_csv_files/legitimate-urls.csv", index=False, encoding='UTF-8')
+        d = {'Protocol': pd.Series(protocol), 'Domain': pd.Series(domain), 'Path': pd.Series(path),
+             'Having_IP': pd.Series(having_ip), 'URL_Length': pd.Series(len_url),
+             'Having_@_symbol': pd.Series(having_at_symbol), 'Redirection_//_symbol': pd.Series(redirection_symbol),
+             'Prefix_suffix_separation': pd.Series(prefix_suffix_separation), 'Sub_domains': pd.Series(sub_domains),
+             'tiny_url': pd.Series(tiny_url), 'web_traffic': pd.Series(web_traffic), 'label': pd.Series(label)}
+        data = pd.DataFrame(d)
+
+        if bool_phishing is True:
+            csv_name = 'phishing-urls'
+        else:
+            csv_name = 'legitimate-urls'
+
+        data.to_csv("../extracted_csv_files/{}.csv".format(csv_name), index=False, encoding='UTF-8')
 
 
 

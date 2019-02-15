@@ -1,8 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix,accuracy_score
-import numpy as np
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 legitimate_urls = pd.read_csv("../extracted_csv_files/legitimate-urls.csv")
 phishing_urls = pd.read_csv("../extracted_csv_files/phishing-urls.csv")
