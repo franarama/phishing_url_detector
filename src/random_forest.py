@@ -10,13 +10,13 @@ phishing_urls = pd.read_csv("../extracted_csv_files/phishing-urls.csv")
 urls = legitimate_urls.append(phishing_urls)
 
 # drop unnecessary columns
-urls = urls.drop(urls.columns[[0, 3, 5]], axis=1)
+urls = urls.drop(urls.columns[[1, 5, 6]], axis=1)
 
 # shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
 urls = urls.sample(frac=1).reset_index(drop=True)
 
-urls_without_labels = urls.drop('label', axis=1)
-labels = urls['label']
+urls_without_labels = urls.drop('Label', axis=1)
+labels = urls['Label']
 
 data_train, data_test, labels_train, labels_test = \
     train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
