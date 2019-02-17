@@ -69,9 +69,9 @@ class FeatureExtraction:
             if word.isalnum() or not re.match("^[a-zA-Z0-9_]*$", word):
                 bad_count += 1
         if bad_count > 1:
-            return 0
-        else:
             return 1
+        else:
+            return 0
 
     def known_tld(self, url):
         suffix = self.get_suffix(url)
