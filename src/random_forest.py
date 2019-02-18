@@ -2,32 +2,54 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score
+import matplotlib.pyplot as plt
+import numpy as np
 
-legitimate_urls = pd.read_csv("../extracted_csv_files/legitimate-urls.csv")
-phishing_urls = pd.read_csv("../extracted_csv_files/phishing-urls.csv")
 
-# have to merge the two files together
-urls = legitimate_urls.append(phishing_urls)
+class RandomForestMain:
+    def __init__(self, phishing_csv_path, legitimate_csv_path):
+        self.phishing_csv_path = phishing_csv_path
+        self.legitimate_csv_path = legitimate_csv_path
 
-# drop unnecessary columns
-urls = urls.drop(urls.columns[[1, 5, 6]], axis=1)
+    def main(self):
+        phishing_urls = pd.read_csv(self.phishing_csv_path)
+        legitimate_urls = pd.read_csv(self.legitimate_csv_path)
 
-# shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
-urls = urls.sample(frac=1).reset_index(drop=True)
+        # have to merge the two files together
+        urls = legitimate_urls.append(phishing_urls)
 
-urls_without_labels = urls.drop('Label', axis=1)
-labels = urls['Label']
+        # drop unnecessary columns
+        urls = urls.drop(urls.columns[[1, 5, 6]], axis=1)
 
-data_train, data_test, labels_train, labels_test = \
-    train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
+        # shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
+        urls = urls.sample(frac=1).reset_index(drop=True)
 
-random_forest_classifier = RandomForestClassifier()
-random_forest_classifier.fit(data_train, labels_train)
+        urls_without_labels = urls.drop('Label', axis=1)
+        labels = urls['Label']
 
-prediction_label = random_forest_classifier.predict(data_test)
-confusionMatrix = confusion_matrix(labels_test, prediction_label)
+        data_train, data_test, labels_train, labels_test = \
+            train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
 
-print(confusionMatrix)
+        random_forest_classifier = RandomForestClassifier()
+        random_forest_classifier.fit(data_train, labels_train)
 
-accuracy = accuracy_score(labels_test, prediction_label)
-print(accuracy)
+        prediction_label = random_forest_classifier.predict(data_test)
+        confusion_matrix_ = confusion_matrix(labels_test, prediction_label)
+
+        print(confusion_matrix_)
+
+        accuracy = accuracy_score(labels_test, prediction_label)
+        print(accuracy)
+
+        feature_importances = random_forest_classifier.feature_importances_
+        indices = np.argsort(feature_importances)[::1]
+
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title("Feature importance")
+        plt.bar(range(data_train.shape[1]), feature_importances[indices],
+               color="g", align="center")
+
+        plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
+        plt.xlim([-1, data_train.shape[1]])
+        plt.show()

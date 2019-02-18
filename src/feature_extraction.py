@@ -9,7 +9,6 @@ import tldextract
 
 
 class FeatureExtraction:
-
     def __init__(self):
         pass
 
@@ -80,9 +79,24 @@ class FeatureExtraction:
         else:
             return 0
 
+
 class FeMain:
-    @staticmethod
-    def main(input_data_path, bool_phishing):
+    def __init__(self, input_phishing_path, input_legitimate_path, output_folder_path):
+        self.input_phishing_path = input_phishing_path
+        self.input_legitimate_path = input_legitimate_path
+        self.output_folder_path = output_folder_path
+        self.output_phishing_file = open("{path}{name}.csv".format(path=self.output_folder_path,
+                                                                   name='phishing-urls'), 'w')
+        self.output_legitimate_file = open("{path}{name}.csv".format(path=self.output_folder_path,
+                                                                     name='legitimate-urls'), 'w')
+
+    def main(self, bool_phishing):
+        if bool_phishing:
+            input_data_path = self.input_phishing_path
+            output_file = self.output_phishing_file
+        else:
+            input_data_path = self.input_legitimate_path
+            output_file = self.output_legitimate_file
 
         raw_data = pd.read_csv(input_data_path, header=None, names=['urls'])
 
@@ -96,7 +110,7 @@ class FeMain:
         random_chars = []
         known_tld = []
 
-        # object creation
+        # create feature extraction object
         fe = FeatureExtraction()
 
         for i in range(0, len(raw_data["urls"])):
@@ -119,12 +133,7 @@ class FeMain:
              'Known TLD': pd.Series(known_tld), 'Label': pd.Series(label)}
         data = pd.DataFrame(d)
 
-        if bool_phishing is True:
-            csv_name = 'phishing-urls'
-        else:
-            csv_name = 'legitimate-urls'
-
-        data.to_csv("../extracted_csv_files/{}.csv".format(csv_name), index=False, encoding='UTF-8')
+        data.to_csv(output_file, index=False, encoding='UTF-8')
 
 
 
