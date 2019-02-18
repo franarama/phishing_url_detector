@@ -24,9 +24,6 @@ class FeatureExtraction:
     def get_suffix(self, url):
         return tldextract.extract(url).suffix
 
-    def get_words(self, url):
-        return re.findall(r'\w+\b', url)[1:]
-
     # checks URL length, phishing urls typically have greater length
     def long_url(self, url):
         if len(url) < 54:
@@ -60,17 +57,6 @@ class FeatureExtraction:
             return 0
         else:
             return 2
-
-    def random_chars(self, url):
-        word_list = self.get_words(self.get_path(url))
-        bad_count = 0
-        for word in word_list:
-            if word.isalnum() or not re.match("^[a-zA-Z0-9_]*$", word):
-                bad_count += 1
-        if bad_count > 1:
-            return 1
-        else:
-            return 0
 
     def known_tld(self, url):
         suffix = self.get_suffix(url)
@@ -107,7 +93,6 @@ class FeMain:
         url_length = []
         sub_domains = []
         alexa_rank = []
-        random_chars = []
         known_tld = []
 
         # create feature extraction object
@@ -121,7 +106,6 @@ class FeMain:
             url_length.append(fe.long_url(url))
             sub_domains.append(fe.sub_domains(url))
             alexa_rank.append(fe.alexa_rank(url))
-            random_chars.append(fe.random_chars(url))
             known_tld.append(fe.known_tld(url))
             print('Extracting features for ', i, ':', url)
 
@@ -129,8 +113,8 @@ class FeMain:
 
         d = {'Protocol': pd.Series(protocol), 'Domain': pd.Series(domain), 'Path': pd.Series(path),
              'URL Length': pd.Series(url_length), 'Num Subdomains': pd.Series(sub_domains),
-             'Alexa Rank': pd.Series(alexa_rank), 'Random chars': pd.Series(random_chars),
-             'Known TLD': pd.Series(known_tld), 'Label': pd.Series(label)}
+             'Alexa Rank': pd.Series(alexa_rank), 'Known TLD': pd.Series(known_tld),
+             'Label': pd.Series(label)}
         data = pd.DataFrame(d)
 
         data.to_csv(output_file, index=False, encoding='UTF-8')
