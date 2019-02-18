@@ -8,9 +8,9 @@ def get_all_substrings(str_to_check):
 
 
 class WordDecomposer:
-    def __init__(self, word_list):
+    def __init__(self):
         self.dict = enchant.Dict('en_US')
-        self.word_list = word_list
+        self.word_list = []
 
     # TODO: remove false positives
     def analyze(self, compound_word):

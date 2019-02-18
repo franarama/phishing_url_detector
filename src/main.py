@@ -1,5 +1,5 @@
-from src.feature_extraction import FeMain
-from src.random_forest import RandomForestMain
+from feature_extraction import FeMain
+from random_forest import RandomForestMain
 import os
 
 os.makedirs('../extracted_csv_files/', exist_ok=True)

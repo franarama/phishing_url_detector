@@ -2,7 +2,6 @@
 from urllib.parse import urlparse
 import urllib.request
 from urllib.error import HTTPError
-import re
 import pandas as pd
 from bs4 import BeautifulSoup
 import tldextract
