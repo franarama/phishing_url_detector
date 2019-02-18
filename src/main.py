@@ -1,5 +1,8 @@
 from src.feature_extraction import FeMain
 from src.random_forest import RandomForestMain
+import os
+
+os.makedirs('../extracted_csv_files/', exist_ok=True)
 
 # path constants
 INPUT_PHISHING_PATH = '../raw_datasets/data_legitimate_1000.txt'
