@@ -3,6 +3,7 @@ from gib_detect_train import train
 from gib_detect import check
 from word_decomposer import WordDecomposer
 from malicious_analysis import MaliciousnessAnalysis
+from urllib.parse import urlparse
 
 
 def get_words(url):
@@ -15,13 +16,19 @@ class DataPreprocessing:
         self.keyword_count = 0
         self.random_word_count = 0
         self.word_list = []
-        self.similar_word_list = []
+        self.similar_brand_list = []
+        self.similar_keyword_list = []
         self.found_word_list = []
+        self.raw_word_count = 0
+        self.has_random_domain = False
         # train the gibberish detector
         train()
 
     def main(self, url):
+        if check(urlparse(url).netloc):
+            self.has_random_domain = True
         words = get_words(url)
+        self.raw_word_count = len(words)
         for word in words:
             if word.lower() in open('../input/brands.txt').read().lower():
                 self.brand_name_count += 1
@@ -41,4 +48,4 @@ class DataPreprocessing:
                         self.word_list.extend(wd.analyze(word))
                     # create malicious analysis object
                     ma = MaliciousnessAnalysis()
-                    self.found_word_list, self.similar_word_list = ma.analyze(word)
+                    self.found_word_list, self.similar_brand_list, self.similar_keyword_list = ma.analyze(word)

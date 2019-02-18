@@ -27,7 +27,8 @@ def edit_distance(s1, s2):
 class MaliciousnessAnalysis:
     def __init__(self):
         self.found_word_list = []
-        self.similar_word_list = []
+        self.similar_brand_list = []
+        self.similar_keyword_list = []
 
     def analyze(self, word):
         if word in open('../input/brands.txt').read() \
@@ -36,8 +37,8 @@ class MaliciousnessAnalysis:
         else:
             for brand in open('../input/brands.txt').read():
                 if edit_distance(word.lower(), brand.lower()) < 2:
-                    self.similar_word_list.append(word)
+                    self.similar_brand_list.append(word)
             for keyword in open('../input/keywords.txt').read():
                 if edit_distance(word.lower(), keyword.lower()) < 2:
-                    self.similar_word_list.append(word)
-        return self.found_word_list, self.similar_word_list
+                    self.similar_keyword_list.append(word)
+        return self.found_word_list, self.similar_brand_list, self.similar_keyword_list

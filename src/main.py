@@ -5,7 +5,7 @@ import os
 os.makedirs('../extracted_csv_files/', exist_ok=True)
 
 # path constants
-INPUT_PHISHING_PATH = '../raw_datasets/data_legitimate_1000.txt'
+INPUT_PHISHING_PATH = '../raw_datasets/data_phishing_1000.txt'
 INPUT_LEGITIMATE_PATH = '../raw_datasets/data_legitimate_1000.txt'
 OUTPUT_PATH = '../extracted_csv_files/'
 
