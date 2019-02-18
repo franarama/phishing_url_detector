@@ -5,6 +5,7 @@ from urllib.error import HTTPError
 import pandas as pd
 from bs4 import BeautifulSoup
 import tldextract
+from data_preprocessing.main import DataPreprocessing
 
 
 class FeatureExtraction:
@@ -64,6 +65,11 @@ class FeatureExtraction:
         else:
             return 0
 
+    def brand_name_count(self, count):
+        if count > 1:
+            return 1
+        else:
+            return 0
 
 class FeMain:
     def __init__(self, input_phishing_path, input_legitimate_path, output_folder_path):
@@ -93,9 +99,11 @@ class FeMain:
         sub_domains = []
         alexa_rank = []
         known_tld = []
+        brand_name_count = []
 
         # create feature extraction object
         fe = FeatureExtraction()
+        dp = DataPreprocessing()
 
         for i in range(0, len(raw_data["urls"])):
             url = raw_data["urls"][i]
@@ -106,6 +114,8 @@ class FeMain:
             sub_domains.append(fe.sub_domains(url))
             alexa_rank.append(fe.alexa_rank(url))
             known_tld.append(fe.known_tld(url))
+            dp.main(url)
+            brand_name_count.append(fe.brand_name_count(dp.brand_name_count))
             print('Extracting features for ', i, ':', url)
 
         label = [1 if bool_phishing is True else 0 for i in range(0, len(raw_data["urls"]))]
@@ -113,6 +123,7 @@ class FeMain:
         d = {'Protocol': pd.Series(protocol), 'Domain': pd.Series(domain), 'Path': pd.Series(path),
              'URL Length': pd.Series(url_length), 'Num Subdomains': pd.Series(sub_domains),
              'Alexa Rank': pd.Series(alexa_rank), 'Known TLD': pd.Series(known_tld),
+             'Brand count': pd.Series(brand_name_count),
              'Label': pd.Series(label)}
         data = pd.DataFrame(d)
 

@@ -2,11 +2,16 @@
 
 import math
 import pickle
+import os
 
 accepted_chars = 'abcdefghijklmnopqrstuvwxyz '
 
 pos = dict([(char, idx) for idx, char in enumerate(accepted_chars)])
 
+dirname = os.path.dirname(__file__)
+filename_big = os.path.join(dirname, 'big.txt')
+filename_good = os.path.join(dirname, 'good.txt')
+filename_bad = os.path.join(dirname, 'bad.txt')
 
 def normalize(line):
     """ Return only the subset of chars from accepted_chars.
@@ -33,7 +38,7 @@ def train():
 
     # Count transitions from big text file, taken 
     # from http://norvig.com/spell-correct.html
-    for line in open('big.txt'):
+    for line in open(filename_big):
         for a, b in ngram(2, line):
             counts[pos[a]][pos[b]] += 1
 
@@ -49,8 +54,8 @@ def train():
 
     # Find the probability of generating a few arbitrarily choosen good and
     # bad phrases.
-    good_probs = [avg_transition_prob(l, counts) for l in open('good.txt')]
-    bad_probs = [avg_transition_prob(l, counts) for l in open('bad.txt')]
+    good_probs = [avg_transition_prob(l, counts) for l in open(filename_good)]
+    bad_probs = [avg_transition_prob(l, counts) for l in open(filename_bad)]
 
     # Assert that we actually are capable of detecting the junk.
     assert min(good_probs) > max(bad_probs)

@@ -10,19 +10,18 @@ def get_words(url):
 
 
 class DataPreprocessing:
-    def __init__(self, url):
-        self.url = url
+    def __init__(self):
         self.brand_name_count = 0
         self.keyword_count = 0
         self.random_word_count = 0
         self.word_list = []
         self.similar_word_list = []
         self.found_word_list = []
-
-    def main(self):
         # train the gibberish detector
         train()
-        words = get_words(self.url)
+
+    def main(self, url):
+        words = get_words(url)
         for word in words:
             if word.lower() in open('../input/brands.txt').read().lower():
                 self.brand_name_count += 1
@@ -41,5 +40,5 @@ class DataPreprocessing:
                         # add list from word decomposer to the word list to be analyzed
                         self.word_list.extend(wd.analyze(word))
                     # create malicious analysis object
-                    ma = MaliciousnessAnalysis
+                    ma = MaliciousnessAnalysis()
                     self.found_word_list, self.similar_word_list = ma.analyze(word)
