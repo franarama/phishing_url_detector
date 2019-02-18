@@ -74,7 +74,7 @@ class FeatureExtraction:
 
     def known_tld(self, url):
         suffix = self.get_suffix(url)
-        if suffix in open('../input/known_tld.txt', 'r'):
+        if suffix in open('../input/known_tld.txt').read():
             return 1
         else:
             return 0
