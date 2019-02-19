@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score
+# Bar Chart
+import numpy as np
+import matplotlib.pyplot as plt
 
 class DecisionTreeMain:
     def __init__(self, phishing_csv_path, legitimate_csv_path):
@@ -35,7 +38,7 @@ class DecisionTreeMain:
         data_train, data_test, labels_train, labels_test = \
             train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
 
-        print(len(data_train), len(data_test), len(labels_train), len(labels_test))
+        print("Lengths of data trained and data tested", len(data_train), len(data_test), len(labels_train), len(labels_test))
 
         labels_train.value_counts()
         labels_test.value_counts()
@@ -47,7 +50,21 @@ class DecisionTreeMain:
         # Predicting the results for test data
         pred_label = model.predict(data_test)
 
-        # Creating confusion matrix and checking the accuracy
+        # Creating confusion matrix and checking/printing the accuracy
         cm = confusion_matrix(labels_test, pred_label)
         print(cm)
-        accuracy_score(labels_test, pred_label)
+        accuracy = accuracy_score(labels_test, pred_label)
+        print(accuracy)
+
+        #Print the bar chart
+        feature_importances = model.feature_importances_
+        indices = np.argsort(feature_importances)[::1]
+
+        plt.figure()
+        plt.title("Feature importance")
+        plt.bar(range(data_train.shape[1]), feature_importances[indices],
+                color="y", align="center")
+
+        plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
+        plt.xlim([-1, data_train.shape[1]])
+        plt.show()
