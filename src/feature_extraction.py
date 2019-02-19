@@ -47,7 +47,7 @@ class FeatureExtraction:
 
     def subdomain_length(self, url):
         subdomain_length = len(self.get_subdomain(url))
-        if subdomain_length < 10:
+        if subdomain_length > 0 and subdomain_length < 10:
             return 0
         elif 10 <= subdomain_length < 17:
             return 2
