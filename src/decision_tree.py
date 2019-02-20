@@ -58,7 +58,9 @@ class DecisionTreeMain:
 
         #Print the bar chart
         feature_importances = model.feature_importances_
+        print("decision tree", feature_importances, type(feature_importances))
         indices = np.argsort(feature_importances)[::1]
+
 
         plt.figure()
         plt.title("Feature importance")

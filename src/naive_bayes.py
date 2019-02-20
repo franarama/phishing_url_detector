@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import confusion_matrix, accuracy_score
 # Bar Chart
 import numpy as np
@@ -44,14 +44,31 @@ class NaiveBayesMain:
         labels_test.value_counts()
 
         # creating the model and fitting the data into the model
-        model = GaussianNB()
+        model = MultinomialNB()
         model.fit(data_train, labels_train)
+
 
         # Predicting the results for test data
         pred_label = model.predict(data_test)
+        model.predict_proba(data_test)
 
         # Creating confusion matrix and checking/printing the accuracy
         cm = confusion_matrix(labels_test, pred_label)
-        print("Gaussian Navie Bayes cm", cm)
+        print("Gaussian Naive Bayes cm", cm)
         accuracy = accuracy_score(labels_test, pred_label)
-        print("Gaussian Navie Bayes accuracy", accuracy)
+        print("Gaussian Naive Bayes accuracy", accuracy)
+
+        #Print the bar chart
+        print(model, type(model))
+        feature_importances = model.coef_
+        print("Gaussian feat import", feature_importances, type(feature_importances))
+        indices = np.argsort(feature_importances)[::1]
+
+        plt.figure()
+        plt.title("Feature importance")
+        plt.bar(range(data_train.shape[1]), feature_importances[indices],
+                color="r", align="center")
+
+        plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
+        plt.xlim([-1, data_train.shape[1]])
+        plt.show()
