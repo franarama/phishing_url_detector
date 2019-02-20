@@ -61,8 +61,9 @@ class NaiveBayesMain:
         #Print the bar chart
         print(model, type(model))
         feature_importances = model.coef_
-        for i in feature_importances:
-            feature_importances[0] = i
+        abs_weights = np.abs(feature_importances)
+        for i in abs_weights:
+            abs_weights[0] = i
         print("i", i)
         print("Gaussian feat import", i, type(i))
         indices = np.argsort(i)[::1]
