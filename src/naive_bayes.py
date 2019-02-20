@@ -61,12 +61,15 @@ class NaiveBayesMain:
         #Print the bar chart
         print(model, type(model))
         feature_importances = model.coef_
-        print("Gaussian feat import", feature_importances, type(feature_importances))
-        indices = np.argsort(feature_importances)[::1]
+        for i in feature_importances:
+            feature_importances[0] = i
+        print("i", i)
+        print("Gaussian feat import", i, type(i))
+        indices = np.argsort(i)[::1]
 
         plt.figure()
         plt.title("Feature importance")
-        plt.bar(range(data_train.shape[1]), feature_importances[indices],
+        plt.bar(range(data_train.shape[1]), i[indices],
                 color="r", align="center")
 
         plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
