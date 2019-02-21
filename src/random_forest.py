@@ -19,7 +19,7 @@ class RandomForestMain:
         urls = legitimate_urls.append(phishing_urls)
 
         # drop unnecessary columns
-        urls = urls.drop(['Domain', 'Path', 'Protocol'], axis=1)
+        urls = urls.drop(['Domain', 'Path', 'Protocol', 'Subdomain'], axis=1)
 
         # shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
         urls = urls.sample(frac=1).reset_index(drop=True)
@@ -43,6 +43,10 @@ class RandomForestMain:
 
         feature_importances = random_forest_classifier.feature_importances_
         indices = np.argsort(feature_importances)[::1]
+
+        # print feature importances
+        for i in range(data_train.shape[1]):
+            print(i+1, '. ', data_train.columns[indices[i]], ' : ', feature_importances[indices[i]])
 
         # Plot the feature importances of the forest
         plt.figure()

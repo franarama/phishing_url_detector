@@ -1,7 +1,6 @@
-from src.feature_extraction import FeMain
-from src.random_forest import RandomForestMain
-from src.decision_tree import DecisionTreeMain
-
+from feature_extraction import FeMain
+from random_forest import RandomForestMain
+from decision_tree import DecisionTreeMain
 import os
 
 os.makedirs('../extracted_csv_files/', exist_ok=True)
