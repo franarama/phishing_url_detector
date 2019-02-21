@@ -26,6 +26,16 @@ class DataPreprocessing:
         train()
 
     def main(self, url):
+        self.brand_name_count = 0
+        self.keyword_count = 0
+        self.random_word_count = 0
+        self.word_list = []
+        self.similar_brand_list = []
+        self.similar_keyword_list = []
+        self.found_word_list = []
+        self.raw_word_count = 0
+        self.has_random_domain = False
+        self.raw_word_list = []
         if check(tldextract.extract(url).domain):
             self.has_random_domain = True
         words = self.raw_word_list = get_words(url)

@@ -1,5 +1,5 @@
 .idea/
 raw_datasets/.Rhistory
 src/__pycache__/
-src/data_preprocessing/gibberish_detector/__pycache__/
 src/data_preprocessing/__pycache__/
+src/data_preprocessing/gibberish_detector/__pycache__/gib_detect_train.cpython-35.pyc

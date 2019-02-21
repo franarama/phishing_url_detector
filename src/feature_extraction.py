@@ -60,15 +60,15 @@ class FeatureExtraction:
 
     def path_length(self, url):
         path_length = len(self.get_path(url))
-        if path_length < 12:
+        if path_length < 20:
             return 0
-        elif 12 <= path_length < 24:
+        elif 20 <= path_length < 26:
             return 2
         else:
             return 1
 
     # check number of subdomains in URL, more than 3 likely phishing
-    def sub_domains(self, url):
+    def num_sub_domains(self, url):
         if self.get_domain(url).count(".") < 3:
             return 0  # legitimate
         elif url.count(".") == 3:
@@ -129,12 +129,12 @@ class FeatureExtraction:
     def raw_word_count(self, count):
         return 0 if count < 4 else 1
 
+    def word_length_list(self, word_list):
+        return [len(word) for word in word_list]
+
     def avg_word_len(self, word_list):
-        total = 0
         word_len_list = word_length_list(word_list)
-        for length in word_len_list:
-            total += length
-        avg_word_len = total / len(word_list)
+        avg_word_len = sum(word_len_list) / len(word_list)
         if avg_word_len < 9:
             return 0
         elif 9 <= avg_word_len < 12:
@@ -176,9 +176,11 @@ class FeMain:
         if bool_phishing:
             input_data_path = self.input_phishing_path
             output_file = self.output_phishing_file
+            output_analysis_file = '../extracted_csv_files/analysis_data_phishing.csv'
         else:
             input_data_path = self.input_legitimate_path
             output_file = self.output_legitimate_file
+            output_analysis_file = '../extracted_csv_files/analysis_data_legitimate.csv'
 
         raw_data = pd.read_csv(input_data_path, header=None, names=['urls'])
 
@@ -207,6 +209,23 @@ class FeMain:
         shortest_word_len = []
         longest_word_len = []
 
+        path_length_ = []
+        url_length_ = []
+        domain_length_ = []
+        num_sub_domains_ = []
+        subdomain_length_ = []
+        brand_name_count_ = []
+        random_word_count_ = []
+        has_random_domain = []
+        keyword_count_ = []
+        similar_keyword_count_ = []
+        other_word_count_ = []
+        raw_word_count_ = []
+        avg_word_len_ = []
+        longest_word_len_ = []
+        shortest_word_len_ = []
+        similar_brand_count_ = []
+
         # create feature extraction object
         fe = FeatureExtraction()
         dp = DataPreprocessing()
@@ -221,7 +240,7 @@ class FeMain:
             subdomain_length.append(fe.subdomain_length(url))
             path_length.append(fe.path_length(url))
             domain_length.append(fe.domain_length(url))
-            num_sub_domains.append(fe.sub_domains(url))
+            num_sub_domains.append(fe.num_sub_domains(url))
             alexa_rank.append(fe.alexa_rank(url))
             known_tld.append(fe.known_tld(url))
 
@@ -240,9 +259,29 @@ class FeMain:
             longest_word_len.append(fe.longest_word_len(dp.raw_word_list))
             shortest_word_len.append(fe.shortest_word_len(dp.raw_word_list))
 
+            # for analysis
+            path_length_.append(len(fe.get_path(url)))
+            url_length_.append(len(url))
+            domain_length_.append(len(fe.get_domain(url)))
+            num_sub_domains_.append(fe.get_domain(url).count("."))
+            brand_name_count_.append(dp.brand_name_count)
+            random_word_count_.append(dp.random_word_count)
+            has_random_domain.append(dp.has_random_domain)
+            keyword_count_.append(dp.keyword_count)
+            similar_keyword_count_.append(len(dp.similar_keyword_list))
+            other_word_count_.append(len(dp.found_word_list))
+            raw_word_count_.append(dp.raw_word_count)
+            subdomain_length_.append(len(fe.get_subdomain(url)))
+
+            word_lens = fe.word_length_list(dp.raw_word_list)
+            avg_word = sum(word_lens) / len(word_lens)
+            avg_word_len_.append(avg_word)
+            longest_word_len_.append(max(word_lens))
+            shortest_word_len_.append(min(word_lens))
+            similar_brand_count_.append(len(dp.similar_brand_list))
             print('Extracting features for ', i, ':', url)
 
-        label = [1 if bool_phishing is True else 0 for i in range(0, len(raw_data["urls"]))]
+        label = [1 if bool_phishing is True else 0 for _ in range(0, len(raw_data["urls"]))]
 
         d = {'Protocol': pd.Series(protocol), 'Domain': pd.Series(domain), 'Path': pd.Series(path),
              'Subdomain': pd.Series(subdomain), 'URL len': pd.Series(url_length),
@@ -260,5 +299,18 @@ class FeMain:
         data = pd.DataFrame(d)
         data.to_csv(output_file, index=False, encoding='UTF-8')
 
+        # analysis data
 
+        da = {'Protocol': pd.Series(protocol), 'Domain': pd.Series(domain), 'Path': pd.Series(path),
+              'Subdomain': pd.Series(subdomain), 'Path len': pd.Series(path_length_), 'URL len': pd.Series(url_length_),
+              'Dom len': pd.Series(domain_length_), 'Sbd len': pd.Series(subdomain_length_),
+              '# SBD': pd.Series(num_sub_domains_), '#Brands': pd.Series(brand_name_count_),
+              '#SimBrs': pd.Series(similar_brand_count_), '#Key': pd.Series(keyword_count_),
+              '#SimKey': pd.Series(similar_keyword_count_), '#Rand': pd.Series(random_word_count_),
+              'RandD': pd.Series(has_random_domain), '#Oth': pd.Series(other_word_count_),
+              '#Raw': pd.Series(raw_word_count_), 'AvgWL': pd.Series(avg_word_len_),
+              'MaxWL': pd.Series(longest_word_len_), 'MinWL': pd.Series(shortest_word_len_),
+              'Label': pd.Series(label)}
 
+        analysis_data = pd.DataFrame(da)
+        analysis_data.to_csv(output_analysis_file, index=False, encoding='UTF-8')
