@@ -55,16 +55,3 @@ class LogisticRegMain:
         print(cm)
         accuracy = accuracy_score(labels_test, pred_label)
         print(accuracy)
-
-        #Print the bar chart
-        feature_importances = model.feature_importances_
-        indices = np.argsort(feature_importances)[::1]
-
-        plt.figure()
-        plt.title("Feature importance")
-        plt.bar(range(data_train.shape[1]), feature_importances[indices],
-                color="o", align="center")
-
-        plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
-        plt.xlim([-1, data_train.shape[1]])
-        plt.show()
