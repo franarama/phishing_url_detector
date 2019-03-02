@@ -182,7 +182,7 @@ class FeMain:
             output_file = self.output_legitimate_file
             output_analysis_file = '../extracted_csv_files/analysis_data_legitimate.csv'
 
-        raw_data = pd.read_csv(input_data_path, header=None, names=['urls'])
+        raw_data = pd.read_csv(input_data_path, header=None, names=['urls'], nrows=3000)
 
         # features
         protocol = []
