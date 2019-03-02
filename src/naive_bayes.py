@@ -18,7 +18,7 @@ class NaiveBayesMain:
         urls = legitimate_urls.append(phishing_urls)
 
         # drop unnecessary columns
-        urls = urls.drop(['Domain', 'Path', 'Protocol'], axis=1)
+        urls = urls.drop(['Domain', 'Path', 'Protocol', 'Subdomain'], axis=1)
 
         # shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
         urls = urls.sample(frac=1).reset_index(drop=True)
@@ -38,7 +38,7 @@ class NaiveBayesMain:
         data_train, data_test, labels_train, labels_test = \
             train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
 
-        print("Lengths of data trained and data tested", len(data_train), len(data_test), len(labels_train), len(labels_test))
+        print("Lengths of data trained and data tested in Gaussian Naive Bayes", len(data_train), len(data_test), len(labels_train), len(labels_test))
 
         labels_train.value_counts()
         labels_test.value_counts()
@@ -54,25 +54,6 @@ class NaiveBayesMain:
 
         # Creating confusion matrix and checking/printing the accuracy
         cm = confusion_matrix(labels_test, pred_label)
-        print("Gaussian Naive Bayes cm", cm)
+        print("Gaussian Naive Bayes Confusion Matrix: ", cm)
         accuracy = accuracy_score(labels_test, pred_label)
-        print("Gaussian Naive Bayes accuracy", accuracy)
-
-        #Print the bar chart
-        print(model, type(model))
-        feature_importances = model.coef_
-        abs_weights = np.abs(feature_importances)
-        for i in abs_weights:
-            abs_weights[0] = i
-        print("i", i)
-        print("Gaussian feat import", i, type(i))
-        indices = np.argsort(i)[::1]
-
-        plt.figure()
-        plt.title("Feature importance")
-        plt.bar(range(data_train.shape[1]), i[indices],
-                color="r", align="center")
-
-        plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
-        plt.xlim([-1, data_train.shape[1]])
-        plt.show()
+        print("Gaussian Naive Bayes Accuracy: ", accuracy)

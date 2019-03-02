@@ -18,7 +18,7 @@ class DecisionTreeMain:
         urls = legitimate_urls.append(phishing_urls)
 
         # drop unnecessary columns
-        urls = urls.drop(['Domain', 'Path', 'Protocol'], axis=1)
+        urls = urls.drop(['Domain', 'Path', 'Protocol', 'Subdomain'], axis=1)
 
         # shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
         urls = urls.sample(frac=1).reset_index(drop=True)
@@ -38,7 +38,7 @@ class DecisionTreeMain:
         data_train, data_test, labels_train, labels_test = \
             train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
 
-        print("Lengths of data trained and data tested", len(data_train), len(data_test), len(labels_train), len(labels_test))
+        print("Lengths of data trained and data tested in Decision Tree", len(data_train), len(data_test), len(labels_train), len(labels_test))
 
         labels_train.value_counts()
         labels_test.value_counts()
@@ -52,13 +52,12 @@ class DecisionTreeMain:
 
         # Creating confusion matrix and checking/printing the accuracy
         cm = confusion_matrix(labels_test, pred_label)
-        print(cm)
+        print("Decision Tree Confusion Matrix: ", cm)
         accuracy = accuracy_score(labels_test, pred_label)
-        print(accuracy)
+        print("Decision Tress Accuracy: ", accuracy)
 
         #Print the bar chart
         feature_importances = model.feature_importances_
-        print("decision tree", feature_importances, type(feature_importances))
         indices = np.argsort(feature_importances)[::1]
 
 
