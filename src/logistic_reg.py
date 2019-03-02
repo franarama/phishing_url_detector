@@ -2,9 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, accuracy_score
-# Bar Chart
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 class LogisticRegMain:
     def __init__(self, phishing_csv_path, legitimate_csv_path):
@@ -38,7 +36,8 @@ class LogisticRegMain:
         data_train, data_test, labels_train, labels_test = \
             train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
 
-        print("Lengths of data trained and data tested", len(data_train), len(data_test), len(labels_train), len(labels_test))
+        print("Lengths of data trained and data tested", len(data_train), len(data_test), len(labels_train),
+              len(labels_test))
 
         labels_train.value_counts()
         labels_test.value_counts()

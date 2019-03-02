@@ -18,7 +18,7 @@ class DecisionTreeMain:
         urls = legitimate_urls.append(phishing_urls)
 
         # drop unnecessary columns
-        urls = urls.drop(['Domain', 'Path', 'Protocol'], axis=1)
+        urls = urls.drop(['Domain', 'Path', 'Protocol', 'Subdomain'], axis=1)
 
         # shuffling the rows in the dataset so that when splitting the train and test set are equally distributed
         urls = urls.sample(frac=1).reset_index(drop=True)

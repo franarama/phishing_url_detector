@@ -1,5 +1,4 @@
 .idea/
 raw_datasets/.Rhistory
-src/__pycache__/
-extracted_csv_files/legitimate-urls.csv
-extracted_csv_files/phishing-urls.csv
+*.pyc
+extracted_csv_files/*.csv
