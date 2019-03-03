@@ -65,7 +65,7 @@ class AdaBoostMain:
         plt.figure()
         plt.title("Feature importance for AdaBoost")
         plt.bar(range(data_train.shape[1]), feature_importances[indices],
-                color="y", align="center")
+                color="r", align="center")
 
         plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
         plt.xlim([-1, data_train.shape[1]])
