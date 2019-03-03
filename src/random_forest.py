@@ -36,10 +36,10 @@ class RandomForestMain:
         prediction_label = random_forest_classifier.predict(data_test)
         confusion_matrix_ = confusion_matrix(labels_test, prediction_label)
 
-        print(confusion_matrix_)
+        print("Random Forest Confusion Matrix: ", confusion_matrix_)
 
         accuracy = accuracy_score(labels_test, prediction_label)
-        print(accuracy)
+        print("Random Forest Accuracy: ", accuracy)
 
         feature_importances = random_forest_classifier.feature_importances_
         indices = np.argsort(feature_importances)[::1]

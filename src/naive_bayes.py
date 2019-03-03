@@ -1,12 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import confusion_matrix, accuracy_score
 # Bar Chart
 import numpy as np
 import matplotlib.pyplot as plt
 
-class DecisionTreeMain:
+class NaiveBayesMain:
     def __init__(self, phishing_csv_path, legitimate_csv_path):
         self.phishing_csv_path = phishing_csv_path
         self.legitimate_csv_path = legitimate_csv_path
@@ -38,34 +38,22 @@ class DecisionTreeMain:
         data_train, data_test, labels_train, labels_test = \
             train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
 
-        print("Lengths of data trained and data tested in Decision Tree", len(data_train), len(data_test), len(labels_train), len(labels_test))
+        print("Lengths of data trained and data tested in Gaussian Naive Bayes", len(data_train), len(data_test), len(labels_train), len(labels_test))
 
         labels_train.value_counts()
         labels_test.value_counts()
 
         # creating the model and fitting the data into the model
-        model = DecisionTreeClassifier()
+        model = MultinomialNB()
         model.fit(data_train, labels_train)
+
 
         # Predicting the results for test data
         pred_label = model.predict(data_test)
+        model.predict_proba(data_test)
 
         # Creating confusion matrix and checking/printing the accuracy
         cm = confusion_matrix(labels_test, pred_label)
-        print("Decision Tree Confusion Matrix: ", cm)
+        print("Gaussian Naive Bayes Confusion Matrix: ", cm)
         accuracy = accuracy_score(labels_test, pred_label)
-        print("Decision Tress Accuracy: ", accuracy)
-
-        #Print the bar chart
-        feature_importances = model.feature_importances_
-        indices = np.argsort(feature_importances)[::1]
-
-
-        plt.figure()
-        plt.title("Feature importance")
-        plt.bar(range(data_train.shape[1]), feature_importances[indices],
-                color="y", align="center")
-
-        plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
-        plt.xlim([-1, data_train.shape[1]])
-        plt.show()
+        print("Gaussian Naive Bayes Accuracy: ", accuracy)

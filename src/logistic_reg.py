@@ -51,6 +51,6 @@ class LogisticRegMain:
 
         # Creating confusion matrix and checking/printing the accuracy
         cm = confusion_matrix(labels_test, pred_label)
-        print(cm)
+        print("Logistic Regression Confusion Matrix: ", cm)
         accuracy = accuracy_score(labels_test, pred_label)
-        print(accuracy)
+        print("Logistic Regression Accuracy: ", accuracy)

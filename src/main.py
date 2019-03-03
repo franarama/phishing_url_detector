@@ -2,6 +2,7 @@ from feature_extraction import FeMain
 from random_forest import RandomForestMain
 from decision_tree import DecisionTreeMain
 from logistic_reg import LogisticRegMain
+from naive_bayes import NaiveBayesMain
 import os
 
 os.makedirs('../extracted_csv_files/', exist_ok=True)
@@ -17,7 +18,7 @@ OUTPUT_PATH = '../extracted_csv_files/'
 # rf = RandomForestMain('../extracted_csv_files/phishing-urls.csv', '../extracted_csv_files/legitimate-urls.csv')
 # dt = DecisionTreeMain('../extracted_csv_files/phishing-urls.csv', '../extracted_csv_files/legitimate-urls.csv')
 # lr = LogisticRegMain('../extracted_csv_files/phishing-urls.csv', '../extracted_csv_files/legitimate-urls.csv')
-
+# nb = NaiveBayesMain('../extracted_csv_files/phishing-urls.csv', '../extracted_csv_files/legitimate-urls.csv')
 
 # LONG WAY
 # run random forest on generated output files
@@ -33,7 +34,9 @@ fe.main(bool_phishing=False)
 rf = RandomForestMain(fe.output_phishing_file.name, fe.output_legitimate_file.name)
 dt = DecisionTreeMain(fe.output_phishing_file.name, fe.output_legitimate_file.name)
 lr = LogisticRegMain(fe.output_phishing_file.name, fe.output_legitimate_file.name)
+nb = NaiveBayesMain(fe.output_phishing_file.name, fe.output_legitimate_file.name)
 
 rf.main()
 dt.main()
 lr.main()
+nb.main()
