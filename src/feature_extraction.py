@@ -6,6 +6,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import tldextract
 from data_preprocessing.main import DataPreprocessing
+import re
 
 
 def word_length_list(word_list):
@@ -44,10 +45,24 @@ class FeatureExtraction:
         domain_length = len(self.get_domain(url))
         if domain_length < 10:
             return 0
-        elif 10 <= domain_length < 17:
-            return 2
         else:
             return 1
+
+    def has_IP(self, url):
+        match = re.search('(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\/)|'  #IPv4
+                    '((0x[0-9a-fA-F]{1,2})\\.(0x[0-9a-fA-F]{1,2})\\.(0x[0-9a-fA-F]{1,2})\\.(0x[0-9a-fA-F]{1,2})\\/)'  #IPv4 in hexadecimal
+                    '(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}',url)     #Ipv6
+        if match:
+            return 1            # phishing
+        else:
+            return 0            # legitimate
+
+    def uses_HTTPS(self, url):
+        protocol = self.get_protocol(url).upper()
+        if protocol == 'HTTPS':
+            return 1
+        else:
+            return 0
 
     def subdomain_length(self, url):
         subdomain_length = len(self.get_subdomain(url))
@@ -60,19 +75,17 @@ class FeatureExtraction:
 
     def path_length(self, url):
         path_length = len(self.get_path(url))
-        if path_length < 20:
+        if path_length == 1:
             return 0
-        elif 20 <= path_length < 26:
+        elif 2 <= path_length < 16:
             return 2
         else:
             return 1
 
     # check number of subdomains in URL, more than 3 likely phishing
     def num_sub_domains(self, url):
-        if self.get_domain(url).count(".") < 3:
+        if self.get_domain(url).count(".") == 0:
             return 0  # legitimate
-        elif url.count(".") == 3:
-            return 2  # suspicious
         else:
             return 1  # phishing
 
@@ -100,7 +113,7 @@ class FeatureExtraction:
             return 0
 
     def brand_name_count(self, count):
-        return 1 if count > 1 else 0
+        return 1 if count >= 1 else 0
 
     def similar_brand_count(self, count):
         return 0 if count < 1 else 0
@@ -112,13 +125,18 @@ class FeatureExtraction:
     def random_word_count(self, count):
         if count <= 3:
             return 0
-        elif count > 3 and count < 5:
+        elif 3 < count < 5:
             return 2
         else:
             return 1
 
     def keyword_count(self, count):
-        return 0 if count < 2 else 1
+        if count <= 2:
+            return 2
+        elif count > 5:
+            return 1
+        else:
+            return 0
 
     def similar_keyword_count(self, count):
         return 0 if count < 1 else 1
@@ -145,7 +163,7 @@ class FeatureExtraction:
     def longest_word_len(self, word_list):
         word_len_list = word_length_list(word_list)
         max_len = max(word_len_list)
-        if max_len > 15:
+        if max_len > 11:
             return 1
         else:
             return 0
@@ -153,7 +171,7 @@ class FeatureExtraction:
     def shortest_word_len(self, word_list):
         word_len_list = word_length_list(word_list)
         min_len = min(word_len_list)
-        if min_len < 4:
+        if min_len < 3:
             return 1
         else:
             return 0
@@ -194,6 +212,8 @@ class FeMain:
         path_length = []
         url_length = []
         num_sub_domains = []
+        has_ip = []
+        uses_https = []
         alexa_rank = []
         known_tld = []
         brand_name_count = []
@@ -241,6 +261,8 @@ class FeMain:
             path_length.append(fe.path_length(url))
             domain_length.append(fe.domain_length(url))
             num_sub_domains.append(fe.num_sub_domains(url))
+            has_ip.append(fe.has_IP(url))
+            uses_https.append(fe.uses_HTTPS(url))
             alexa_rank.append(fe.alexa_rank(url))
             known_tld.append(fe.known_tld(url))
 
@@ -287,6 +309,7 @@ class FeMain:
              'Subdomain': pd.Series(subdomain), 'URL len': pd.Series(url_length),
              'Domain len': pd.Series(domain_length), 'Subdomain len': pd.Series(subdomain_length),
              'Path len': pd.Series(path_length), '#Subdomains': pd.Series(num_sub_domains),
+             'IP': pd.Series(has_ip), 'HTTPS': pd.Series(uses_https),
              'Alexa': pd.Series(alexa_rank), 'Known TLD': pd.Series(known_tld),
              '#Brand': pd.Series(brand_name_count), '#Similar brand': pd.Series(similar_brand_count),
              '#Similar keyword': pd.Series(similar_keyword_count), 'Brand check': pd.Series(brand_check),
