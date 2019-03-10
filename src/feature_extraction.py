@@ -245,6 +245,7 @@ class FeMain:
         longest_word_len_ = []
         shortest_word_len_ = []
         similar_brand_count_ = []
+        raw_word_stdev = []
 
         # create feature extraction object
         fe = FeatureExtraction()
@@ -294,6 +295,7 @@ class FeMain:
             other_word_count_.append(len(dp.found_word_list))
             raw_word_count_.append(dp.raw_word_count)
             subdomain_length_.append(len(fe.get_subdomain(url)))
+            raw_word_stdev.append(dp.raw_word_stdv)
 
             word_lens = fe.word_length_list(dp.raw_word_list)
             avg_word = sum(word_lens) / len(word_lens)
@@ -333,6 +335,7 @@ class FeMain:
               'RandD': pd.Series(has_random_domain), '#Oth': pd.Series(other_word_count_),
               '#Raw': pd.Series(raw_word_count_), 'AvgWL': pd.Series(avg_word_len_),
               'MaxWL': pd.Series(longest_word_len_), 'MinWL': pd.Series(shortest_word_len_),
+              'STDV': pd.Series(raw_word_stdev),
               'Label': pd.Series(label)}
 
         analysis_data = pd.DataFrame(da)

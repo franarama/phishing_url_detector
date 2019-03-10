@@ -4,6 +4,7 @@ from gib_detect import check
 from word_decomposer import WordDecomposer
 from malicious_analysis import MaliciousnessAnalysis
 import tldextract
+import statistics
 
 
 def get_words(url):
@@ -22,6 +23,7 @@ class DataPreprocessing:
         self.raw_word_count = 0
         self.has_random_domain = False
         self.raw_word_list = []
+        self.raw_word_stdv = 0
         # train the gibberish detector
         train()
 
@@ -36,10 +38,14 @@ class DataPreprocessing:
         self.raw_word_count = 0
         self.has_random_domain = False
         self.raw_word_list = []
+        self.raw_word_stdv = 0
+
         if check(tldextract.extract(url).domain):
             self.has_random_domain = True
         words = self.raw_word_list = get_words(url)
         self.raw_word_count = len(words)
+        if self.raw_word_count > 1:
+            self.raw_word_stdv = statistics.stdev([len(w) for w in self.raw_word_list])
         for word in words:
             if word.lower() in open('../input/brands.txt').read().lower():
                 self.brand_name_count += 1
