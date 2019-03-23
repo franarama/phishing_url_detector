@@ -8,6 +8,7 @@ from knn import KNNMain
 from linearSVC import LinearSVCMain
 import os
 
+
 os.makedirs('../extracted_csv_files/', exist_ok=True)
 
 # path constants
