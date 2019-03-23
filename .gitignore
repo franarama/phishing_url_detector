@@ -2,3 +2,4 @@
 raw_datasets/.Rhistory
 *.pyc
 extracted_csv_files/*.csv
+.DS_Store
