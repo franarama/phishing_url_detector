@@ -15,4 +15,4 @@ def urltest():
 		percent= percentage(url)
 		return render_template('index.html', percent = percent)
 if __name__ == '__main__':
-	app.run(debug = True)
+	app.run()
