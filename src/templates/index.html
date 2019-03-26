@@ -12,8 +12,9 @@
 	<body>
 
 	<div>test</div>
-		<!-- use action="http://localhost:5000" in testing and action="https://m-piechatzek.github.io/phishing_url_detector/" in live (i think) -->
-		<form action="https://m-piechatzek.github.io/phishing_url_detector/" method="post">
+		<!-- on your comp: cd into folder /src and then run: `$ FLASK_APP=Routes.py flask run` to get localhost:5000-->
+		<!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
+		<form action="http://localhost:5000" method="post">
 		  <input type="text" name="url"></input>
 		  <input type="submit" value="Submit"></input>
 		</form>
