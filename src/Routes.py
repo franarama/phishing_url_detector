@@ -7,8 +7,8 @@ app = Flask(__name__)
 
 @app.route('/', methods = ['POST', 'GET'])
 def urltest():
+	form = request.form
 	if request.method == 'POST':
-		form = request.form
 		url = request.form['url']
 		print("got the url: " + url)
 		print("the percentage ", percentage(url))
