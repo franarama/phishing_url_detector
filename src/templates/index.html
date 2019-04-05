@@ -1,15 +1,16 @@
 <!doctype html>
 
 <html lang="en">
-	<head>
-	  <meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
 
-	  <title>Phishing URL Decetor</title>
-	  <meta name="description" content="Phishing URL Decetor">
-	  <meta name="author" content="Fran&Mon">
-	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	
-	<style type="text/css">
+    <title>Phishing URL Decetor</title>
+    <meta name="description" content="Phishing URL Decetor">
+    <meta name="author" content="Fran&Mon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="icon" href="{{url_for('static', filename='images/fish.png')}}"/>
+    <style type="text/css">
 		.header-overall {
 			 border-bottom: 1px solid black;
 			 margin-bottom: 25px;
@@ -26,48 +27,51 @@
 			margin-top: 45px;
 			font-size: 3em;
 		}
-	</style>
-	</head>
 
-	<body>
-		<div class="container">
-			<div class="row header-overall">
-				<div class="col-md-8 logo-text">
-					<h2>Fran&Mon</h2>
-				</div>
-				<div class="col-md-2 text-right header">
-					<a class="text-secondary" href="contactus.html">Contact Us</a>
-				</div>
-				<div class="col-md-2 text-right header">	
-					<a class="text-secondary" href="aboutus.html">About Us</a>
-				</div>
-			</div>
-			<div class="row text-center">
-				<div class="col-md-7">
-			
-					<iframe src="https://giphy.com/embed/B12pQitKCAgx2" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-						</div>
-						<div class="col-md-5">
-							<h3>Phishing URL Detector</h3>
-							<p>Paste in your questionable url here and we will calculate whether there is a high
-							or low chance of it being a phishing url</p>
-							
-					<!-- on your comp: cd into folder /src and then run: `$ FLASK_APP=Routes.py flask run` to get localhost:5000-->
-					<!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
-					<form action="http://localhost:5000" method="post">
-					  <input type="text" name="url"></input>
-					  <input class="btn btn-outline-secondary" type="submit" value="Submit"></input>
-					</form>
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row header-overall">
+        <div class="col-md-8 logo-text">
+            <h2>Fran&Mon</h2>
+        </div>
+        <div class="col-md-2 text-right header">
+            <a class="text-secondary" href="contactus.html">Contact Us</a>
+        </div>
+        <div class="col-md-2 text-right header">
+            <a class="text-secondary" href="aboutus.html">About Us</a>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-md-7">
+
+            <iframe src="https://giphy.com/embed/B12pQitKCAgx2" width="480" height="360" frameBorder="0"
+                    class="giphy-embed" allowFullScreen></iframe>
+        </div>
+        <div class="col-md-5">
+            <h3>Phishing URL Detector</h3>
+            <p>Paste in your questionable url here and we will calculate whether there is a high
+                or low chance of it being a phishing url</p>
+
+            <!-- on your comp: cd into folder /src and then run: `$ FLASK_APP=Routes.py flask run` to get localhost:5000-->
+            <!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
+            <form action="http://localhost:5000" method="post">
+                <input type="text" name="url"></input>
+                <input class="btn btn-outline-secondary" type="submit" value="Submit"></input>
+            </form>
 
 
-					<div id="per"></div>
-				</div>
-			</div>		
-		</div>
-	  <script>  
+            <div id="per"></div>
+        </div>
+    </div>
+</div>
+<script>
 	    var testper = '{{percent}}'
 	    console.log(testper)
 	    document.getElementById('per').innerHTML = testper;
-	  </script>
-	</body>
+
+</script>
+</body>
 </html>
