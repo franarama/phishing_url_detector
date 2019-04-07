@@ -29,7 +29,7 @@ class RandomForestMain:
         labels = urls['Label']
 
         data_train, data_test, labels_train, labels_test = \
-            train_test_split(urls_without_labels, labels, test_size=0.30, random_state=110)
+            train_test_split(urls_without_labels, labels, test_size=0.20, random_state=110)
 
         random_forest_classifier = RandomForestClassifier()
         random_forest_classifier.fit(data_train, labels_train)
