@@ -45,10 +45,10 @@
         </div>
     </div>
     <div class="row text-center">
-        <div class="col-md-7">
+        <div class="col-md-7 embed-responsive embed-responsive-16by9">
 
             <iframe src="https://giphy.com/embed/B12pQitKCAgx2" width="480" height="360" frameBorder="0"
-                    class="giphy-embed" allowFullScreen></iframe>
+                    class="embed-responsive-item giphy-embed" allowFullScreen></iframe>
         </div>
         <div class="col-md-5">
             <h3>Phishing URL Detector</h3>
@@ -68,9 +68,15 @@
     </div>
 </div>
 <script>
-	    var testper = '{{percent}}'
-	    console.log(testper)
-	    document.getElementById('per').innerHTML = testper;
+	    var prediction = {{prediction}};
+	    console.log(prediction);
+	    perElem = document.getElementById('per');
+	    if (prediction[0] == 0) {
+	        perElem.innerHTML = 'Not phishing!';
+	    }
+	    else {
+	        perElem.innerHTML = 'Phishing :(';
+	    }
 
 </script>
 </body>

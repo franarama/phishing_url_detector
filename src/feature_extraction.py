@@ -191,10 +191,6 @@ class FeSingleURL:
         dp = DataPreprocessing()
 
         url = self.url_to_check
-        protocol = fe.get_protocol(url)
-        path = fe.get_path(url)
-        domain = fe.get_domain(url)
-        subdomain = fe.get_subdomain(url)
         url_length = fe.url_length(url)
         subdomain_length = fe.subdomain_length(url)
         path_length = fe.path_length(url)
@@ -220,8 +216,7 @@ class FeSingleURL:
         longest_word_len = fe.longest_word_len(dp.raw_word_list)
         shortest_word_len = fe.shortest_word_len(dp.raw_word_list)
 
-        d = {'Protocol': pd.Series(protocol), 'Domain': pd.Series(domain), 'Path': pd.Series(path),
-             'Subdomain': pd.Series(subdomain), 'URL len': pd.Series(url_length),
+        d = {'URL len': pd.Series(url_length),
              'Domain len': pd.Series(domain_length), 'Subdomain len': pd.Series(subdomain_length),
              'Path len': pd.Series(path_length), '#Subdomains': pd.Series(num_sub_domains),
              'IP': pd.Series(has_ip), 'HTTPS': pd.Series(uses_https),
