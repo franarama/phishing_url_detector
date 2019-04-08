@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="icon" href="{{url_for('static', filename='images/fish.png')}}"/>
+    <!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    -->
     <style type="text/css">
 		.header-overall {
 			 border-bottom: 1px solid black;
@@ -58,8 +61,8 @@
             <!-- on your comp: cd into folder /src and then run: `$ FLASK_APP=Routes.py flask run` to get localhost:5000-->
             <!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
             <form action="http://localhost:5000" method="post">
-                <input type="text" name="url"></input>
-                <input class="btn btn-outline-secondary" type="submit" value="Submit"></input>
+                <input type="text" name="url">
+                <input class="btn btn-outline-secondary" type="submit" value="Submit">
             </form>
 
 
@@ -68,9 +71,9 @@
     </div>
 </div>
 <script>
+        perElem = document.getElementById('per');
 	    var prediction = {{prediction}};
 	    console.log(prediction);
-	    perElem = document.getElementById('per');
 	    if (prediction[0] == 0) {
 	        perElem.innerHTML = 'Not phishing!';
 	    }

@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import tldextract
 from data_preprocessing.main import DataPreprocessing
 import re
+import time
 
 
 def word_length_list(word_list):
@@ -180,6 +181,20 @@ class FeatureExtraction:
     def random_domain(self, bool_rand):
         return 0 if bool_rand else 1
 
+    def special_chars(self, url):
+        domain = self.get_domain(url)
+        subdomain = self.get_subdomain(url)
+        domain_chars = len(domain) - len(re.findall('[\w]', domain))
+        subdomain_chars = len(subdomain) - len(re.findall('[\w]', subdomain))
+        special_char_count = domain_chars + subdomain_chars
+        if special_char_count < 2:
+            return 0
+        elif 2 <= special_char_count < 4:
+            return 2
+        else:
+            return 1
+
+
 
 class FeSingleURL:
     def __init__(self, url_to_check):
@@ -216,7 +231,7 @@ class FeSingleURL:
         longest_word_len = fe.longest_word_len(dp.raw_word_list)
         shortest_word_len = fe.shortest_word_len(dp.raw_word_list)
 
-        d = {'URL len': pd.Series(url_length),
+        d = {'URL len': pd.Series(url_length), '#SC': pd.Series(special_chars),
              'Domain len': pd.Series(domain_length), 'Subdomain len': pd.Series(subdomain_length),
              'Path len': pd.Series(path_length), '#Subdomains': pd.Series(num_sub_domains),
              'IP': pd.Series(has_ip), 'HTTPS': pd.Series(uses_https),
@@ -252,7 +267,7 @@ class FeMain:
             output_file = self.output_legitimate_file
             output_analysis_file = '../extracted_csv_files/analysis_data_legitimate.csv'
 
-        raw_data = pd.read_csv(input_data_path, header=None, names=['urls'], nrows=3640)
+        raw_data = pd.read_csv(input_data_path, header=None, names=['urls'], nrows=3000)
 
         # features
         protocol = []
@@ -298,13 +313,17 @@ class FeMain:
         shortest_word_len_ = []
         similar_brand_count_ = []
         raw_word_stdev = []
+        special_chars = []
 
         # create feature extraction object
         fe = FeatureExtraction()
         dp = DataPreprocessing()
 
+        time_count = 0
         for i in range(0, len(raw_data["urls"])):
+            start_time = time.time()
             url = raw_data["urls"][i]
+            print('Extracting features for ', i, ':', url)
             protocol.append(fe.get_protocol(url))
             path.append(fe.get_path(url))
             domain.append(fe.get_domain(url))
@@ -313,6 +332,7 @@ class FeMain:
             subdomain_length.append(fe.subdomain_length(url))
             path_length.append(fe.path_length(url))
             domain_length.append(fe.domain_length(url))
+
             num_sub_domains.append(fe.num_sub_domains(url))
             has_ip.append(fe.has_IP(url))
             uses_https.append(fe.uses_HTTPS(url))
@@ -333,6 +353,7 @@ class FeMain:
             avg_word_len.append(fe.avg_word_len(dp.raw_word_list))
             longest_word_len.append(fe.longest_word_len(dp.raw_word_list))
             shortest_word_len.append(fe.shortest_word_len(dp.raw_word_list))
+            special_chars.append(fe.special_chars(url))
 
             # for analysis
             path_length_.append(len(fe.get_path(url)))
@@ -355,7 +376,10 @@ class FeMain:
             longest_word_len_.append(max(word_lens))
             shortest_word_len_.append(min(word_lens))
             similar_brand_count_.append(len(dp.similar_brand_list))
-            print('Extracting features for ', i, ':', url)
+
+            total_time = time.time() - start_time
+            time_count += total_time
+            print("--- %s seconds ---" % total_time)
 
         label = [1 if bool_phishing is True else 0 for _ in range(0, len(raw_data["urls"]))]
 
@@ -371,10 +395,12 @@ class FeMain:
              '#Keyword': pd.Series(keyword_count), '#Other word': pd.Series(other_word_count),
              '#Raw word': pd.Series(raw_word_count), 'Avg word len': pd.Series(avg_word_len),
              'Long word len': pd.Series(longest_word_len), 'Short word len': pd.Series(shortest_word_len),
-             'Label': pd.Series(label)}
+             '#SC': pd.Series(special_chars), 'Label': pd.Series(label)}
 
         data = pd.DataFrame(d)
         data.to_csv(output_file, index=False, encoding='UTF-8')
+
+        print("AVG TIME PER URL (s): ", (time_count / len(raw_data["urls"])))
 
         # analysis data
 
