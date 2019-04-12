@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
 
 class RandomForestMain:
@@ -57,3 +58,6 @@ class RandomForestMain:
         plt.xticks(range(data_train.shape[1]), data_train.columns[indices])
         plt.xlim([-1, data_train.shape[1]])
         plt.show()
+
+        # Saving model to disk
+        pickle.dump(random_forest_classifier, open('model.pkl', 'wb'))

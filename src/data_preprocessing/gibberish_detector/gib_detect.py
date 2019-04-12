@@ -2,7 +2,7 @@
 
 import pickle
 import os
-from gib_detect_train import avg_transition_prob
+from data_preprocessing.gibberish_detector.gib_detect_train import avg_transition_prob
 
 dirname = os.path.dirname(__file__)
 filename = os.path.join(dirname, 'gib_model.pki')

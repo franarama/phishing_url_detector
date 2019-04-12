@@ -31,8 +31,8 @@ class MaliciousnessAnalysis:
         self.similar_keyword_list = []
 
     def analyze(self, word):
-        if word in open('../input/brands.txt').read() \
-                or word in open('../input/keywords.txt').read():
+        if word not in open('../input/brands.txt').read() \
+                and word not in open('../input/keywords.txt').read():
             self.found_word_list.append(word)
         else:
             for brand in open('../input/brands.txt').read():
