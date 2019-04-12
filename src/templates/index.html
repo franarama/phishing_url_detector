@@ -26,17 +26,17 @@
 			font-size: 2em;
 		}
 		hr {
-		    background-color: #b5b5b5;
+		    background-color: #cecece;
 		    margin-top: 34px;
 		    height: 1px;
 		}
 		.btn-outline-secondary:not(disabled) {
 		    vertical-align: inherit;
 		}
-		input[type=text] {
+		input[type=text][name=url] {
 		    height: 37px;
+		    width: 75%;
 		}
-
     </style>
 </head>
 
@@ -54,7 +54,7 @@
                     class="embed-responsive-item giphy-embed" allowFullScreen></iframe>
         </div>
         <div class="col-md-5">
-            <h3>Phishing URL Detector</h3>
+            <h3 class="text-center">Phishing URL Detector</h3>
             <p class="py-4">Paste in your questionable url here and we will calculate the probability
                it is phishing or not!</p>
 
@@ -62,8 +62,8 @@
             <!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
             <form action="http://localhost:5000" method="post">
                 <div>
-                    <input type="text" name="url">
-                    <input class="btn btn-outline-secondary" type="submit" value="Submit">
+                    <input type="text" name="url" id="url">
+                    <input class="btn btn-outline-secondary mt-sm-2" type="submit" value="Submit">
                 </div>
             </form>
             <div id="per"></div>
@@ -72,6 +72,7 @@
 </div>
 <script>
         perElem = document.getElementById('per');
+        urlElem = document.getElementById('url');
 	    var prediction = {{prediction}};
 	    var prob = {{prob}};
 	    console.log(prediction);
@@ -79,8 +80,9 @@
 	        perElem.innerHTML = 'Not phishing! ' + '(' + prob + '%)';
 	    }
 	    else {
-	        perElem.innerHTML = 'Phishing'  + '(' + prob + '%)';
+	        perElem.innerHTML = 'Phishing '  + '(' + prob + '%)';
 	    }
+	    urlElem.value = '{{url_to_check}}'
 
 </script>
 </body>

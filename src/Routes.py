@@ -38,7 +38,7 @@ def urltest():
         # 0 - not phishing, 1 - phishing
         print("time taken:", (time.time() - start_time))
         print("prediction=", prediction, "prob=", prob)
-        return render_template('index.html', prediction=prediction, prob=prob)
+        return render_template('index.html', prediction=prediction, prob=prob, url_to_check=url_to_check)
     return render_template('index.html', form=form)
 
 
