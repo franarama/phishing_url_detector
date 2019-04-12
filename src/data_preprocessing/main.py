@@ -1,5 +1,4 @@
 import re
-from data_preprocessing.gibberish_detector.gib_detect_train import train
 from data_preprocessing.gibberish_detector.gib_detect import check
 from data_preprocessing.word_decomposer import WordDecomposer
 from data_preprocessing.malicious_analysis import MaliciousnessAnalysis
@@ -24,8 +23,6 @@ class DataPreprocessing:
         self.has_random_domain = False
         self.raw_word_list = []
         self.raw_word_stdv = 0
-        # train the gibberish detector
-        train()
 
     def main(self, url):
         self.brand_name_count = 0

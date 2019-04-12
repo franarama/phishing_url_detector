@@ -230,6 +230,7 @@ class FeSingleURL:
         avg_word_len = fe.avg_word_len(dp.raw_word_list)
         longest_word_len = fe.longest_word_len(dp.raw_word_list)
         shortest_word_len = fe.shortest_word_len(dp.raw_word_list)
+        special_chars = fe.special_chars(url)
 
         d = {'URL len': pd.Series(url_length), '#SC': pd.Series(special_chars),
              'Domain len': pd.Series(domain_length), 'Subdomain len': pd.Series(subdomain_length),

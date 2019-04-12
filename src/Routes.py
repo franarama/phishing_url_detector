@@ -12,7 +12,8 @@ model = pickle.load(open('model.pkl', 'rb'))
 def predict(to_check):
     fes = FeSingleURL(to_check)
     data = fes.main()
-    # print("DATA=", data)
+    for index, row in data.iterrows():
+        print(row)
     # print("url to check: ", to_check)
     prediction = model.predict(data)
     return prediction
