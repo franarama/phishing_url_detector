@@ -10,25 +10,31 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="icon" href="{{url_for('static', filename='images/fish.png')}}"/>
-    <!--
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    -->
     <style type="text/css">
+        @import url('https://fonts.googleapis.com/css?family=Roboto+Slab');
+        body {
+            font-family: 'Roboto Slab', serif;
+        }
 		.header-overall {
-			 border-bottom: 1px solid black;
 			 margin-bottom: 25px;
-		}
-
-		.header {
-			padding: 25px 0px 25px 0px;
 		}
 		.logo-text {
 			padding: 20px 0px 25px 0px;
-			font-family: bold;
 		}
 		#per {
 			margin-top: 45px;
-			font-size: 3em;
+			font-size: 2em;
+		}
+		hr {
+		    background-color: #b5b5b5;
+		    margin-top: 34px;
+		    height: 1px;
+		}
+		.btn-outline-secondary:not(disabled) {
+		    vertical-align: inherit;
+		}
+		input[type=text] {
+		    height: 37px;
 		}
 
     </style>
@@ -37,35 +43,29 @@
 <body>
 <div class="container">
     <div class="row header-overall">
-        <div class="col-md-8 logo-text">
-            <h2>Fran&Mon</h2>
-        </div>
-        <div class="col-md-2 text-right header">
-            <a class="text-secondary" href="contactus.html">Contact Us</a>
-        </div>
-        <div class="col-md-2 text-right header">
-            <a class="text-secondary" href="aboutus.html">About Us</a>
+        <div class="col-md-12 mt-3 logo-text">
+            <h2 class="text-center">Fran&Mon</h2>
+            <hr>
         </div>
     </div>
     <div class="row text-center">
         <div class="col-md-7 embed-responsive embed-responsive-16by9">
-
             <iframe src="https://giphy.com/embed/B12pQitKCAgx2" width="480" height="360" frameBorder="0"
                     class="embed-responsive-item giphy-embed" allowFullScreen></iframe>
         </div>
         <div class="col-md-5">
             <h3>Phishing URL Detector</h3>
-            <p>Paste in your questionable url here and we will calculate whether there is a high
-                or low chance of it being a phishing url</p>
+            <p class="py-4">Paste in your questionable url here and we will calculate the probability
+               it is phishing or not!</p>
 
             <!-- on your comp: cd into folder /src and then run: `$ FLASK_APP=Routes.py flask run` to get localhost:5000-->
             <!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
             <form action="http://localhost:5000" method="post">
-                <input type="text" name="url">
-                <input class="btn btn-outline-secondary" type="submit" value="Submit">
+                <div>
+                    <input type="text" name="url">
+                    <input class="btn btn-outline-secondary" type="submit" value="Submit">
+                </div>
             </form>
-
-
             <div id="per"></div>
         </div>
     </div>
@@ -73,12 +73,13 @@
 <script>
         perElem = document.getElementById('per');
 	    var prediction = {{prediction}};
+	    var prob = {{prob}};
 	    console.log(prediction);
-	    if (prediction[0] == 0) {
-	        perElem.innerHTML = 'Not phishing!';
+	    if (prediction == 0) {
+	        perElem.innerHTML = 'Not phishing! ' + '(' + prob + '%)';
 	    }
 	    else {
-	        perElem.innerHTML = 'Phishing :(';
+	        perElem.innerHTML = 'Phishing'  + '(' + prob + '%)';
 	    }
 
 </script>
