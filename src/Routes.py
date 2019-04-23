@@ -39,7 +39,7 @@ def urltest():
         print("time taken:", (time.time() - start_time))
         print("prediction=", prediction, "prob=", prob)
         return render_template('index.html', prediction=prediction, prob=prob, url_to_check=url_to_check)
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form, prediction=-1, prob=-1)
 
 
 if __name__ == '__main__':
