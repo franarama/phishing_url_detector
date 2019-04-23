@@ -1,0 +1,114 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Phishing URL Detector</title>
+    <meta name="description" content="Phishing URL Detector">
+    <meta name="author" content="Fran&Mon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+    <link rel="icon" href="/static/images/fish.png"/>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css?family=Roboto+Slab');
+        body {
+            font-family: 'Roboto Slab', serif;
+        }
+		.header-overall {
+			 margin-bottom: 25px;
+		}
+		.logo-text {
+			padding: 20px 0px 25px 0px;
+		}
+		#per {
+			margin-top: 45px;
+			font-size: 2em;
+		}
+		hr {
+		    background-color: #cecece;
+		    margin-top: 34px;
+		    height: 1px;
+		}
+		.btn-outline-secondary:not(disabled) {
+		    vertical-align: inherit;
+		}
+		input[type=text][name=url] {
+		    height: 37px;
+		    width: 75%;
+		}
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row header-overall">
+        <div class="col-md-12 mt-3 logo-text">
+            <h2 class="text-center">Fran&Mon</h2>
+            <hr>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-md-7 embed-responsive embed-responsive-16by9">
+            <iframe src="https://giphy.com/embed/B12pQitKCAgx2" width="480" height="360" frameBorder="0"
+                    class="embed-responsive-item giphy-embed" allowFullScreen></iframe>
+        </div>
+        <div class="col-md-5">
+            <h3 class="text-center">Phishing URL Detector</h3>
+            <p class="py-4">Paste in your questionable url here and we will calculate the probability
+               it is phishing or not!</p>
+
+            <!-- on your comp: cd into folder /src and then run: `$ FLASK_APP=Routes.py flask run` to get localhost:5000-->
+            <!-- use action="http://localhost:5000" in testing on your comp and action="/" in live (i think) -->
+            <form action="/" method="post">
+                <div>
+                    <input type="text" name="url" id="url">
+                    <input class="btn btn-outline-secondary mt-sm-2" type="submit" id="submit" value="Submit" disabled>
+                </div>
+            </form>
+            <div id="per"></div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        function IsURL(str) {
+            var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?'+ // port
+            '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+            '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+            return pattern.test(str);
+        }
+
+        $(document).ready(function() {
+            console.log("READY");
+            perElem = document.getElementById('per');
+            urlElem = document.getElementById('url');
+            var prediction = -1;
+            var prob = -1;
+            if (prediction == 0) {
+                perElem.innerHTML = 'Not phishing! ' + '(' + prob + '%)';
+            }
+            else if (prediction == 1) {
+                perElem.innerHTML = 'Phishing '  + '(' + prob + '%)';
+            }
+            urlElem.value = '';
+            $('#url').bind('keyup', function() {
+                console.log("hi!");
+                check = $('#url').val();
+                if (IsURL(check)) {
+                    $('#submit').prop('disabled', false);
+                }
+                else if (!IsURL(check)) {
+                    $('#submit').prop('disabled', true);
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
