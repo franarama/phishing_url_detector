@@ -1,6 +1,5 @@
 absl-py==0.3.0
 amqp==2.2.2
-apt-clone==0.2.1
 apt-xapian-index==0.47
 apturl==0.5.2
 argcomplete==1.8.2
