@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8">
 
-    <title>Phishing URL Decetor</title>
+    <title>Phishing URL Detector</title>
     <meta name="description" content="Phishing URL Decetor">
     <meta name="author" content="Fran&Mon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
     <link rel="icon" href="{{url_for('static', filename='images/fish.png')}}"/>
     <style type="text/css">
         @import url('https://fonts.googleapis.com/css?family=Roboto+Slab');
@@ -63,27 +64,51 @@
             <form action="http://localhost:5000" method="post">
                 <div>
                     <input type="text" name="url" id="url">
-                    <input class="btn btn-outline-secondary mt-sm-2" type="submit" value="Submit">
+                    <input class="btn btn-outline-secondary mt-sm-2" type="submit" id="submit" value="Submit" disabled>
                 </div>
             </form>
             <div id="per"></div>
         </div>
     </div>
 </div>
-<script>
-        perElem = document.getElementById('per');
-        urlElem = document.getElementById('url');
-	    var prediction = {{prediction}};
-	    var prob = {{prob}};
-	    console.log(prediction);
-	    if (prediction == 0) {
-	        perElem.innerHTML = 'Not phishing! ' + '(' + prob + '%)';
-	    }
-	    else {
-	        perElem.innerHTML = 'Phishing '  + '(' + prob + '%)';
-	    }
-	    urlElem.value = '{{url_to_check}}'
 
-</script>
+    <script>
+        function IsURL(str) {
+            var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?'+ // port
+            '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+            '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+            return pattern.test(str);
+        }
+
+        $(document).ready(function() {
+            console.log("READY");
+            perElem = document.getElementById('per');
+            urlElem = document.getElementById('url');
+            var prediction = {{ prediction }};
+            prob = {{ prob }};
+            if (prediction == 0) {
+                perElem.innerHTML = 'Not phishing! ' + '(' + prob + '%)';
+            }
+            else if (prediction == 1) {
+                perElem.innerHTML = 'Phishing '  + '(' + prob + '%)';
+            }
+            urlElem.value = '{{url_to_check}}';
+            $('#url').bind('keyup', function() {
+                console.log("hi!");
+                check = $('#url').val();
+                if (IsURL(check)) {
+                    $('#submit').prop('disabled', false);
+                }
+                else if (!IsURL(check)) {
+                    $('#submit').prop('disabled', true);
+                }
+            });
+        });
+
+    </script>
 </body>
 </html>
